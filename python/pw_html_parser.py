@@ -23,11 +23,15 @@
 # You can contact me at the following email address:
 # philippe.chretien@gmail.com
 
-import urllib
+from HTMLParser import HTMLParser
 
-from pw_html_parser import *
+class pw_html_parser(HTMLParser):
 
-page = urllib.urlopen('http://www.2sortes.com').read()
+    def handle_starttag(self, tag, attrs):
+        print "<%s" % tag
 
-parser = pw_html_parser()
-parser.feed(page)
+    def handle_endtag(self, tag):
+        print "%s>" % tag
+        
+    def handle_data(self, data):
+        print "Data: %s" % data
