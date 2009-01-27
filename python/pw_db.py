@@ -23,40 +23,18 @@
 # You can contact me at the following email address:
 # philippe.chretien@gmail.com
 
-import urllib
+from pw_db_mysql import *
 
-from HTMLParser import HTMLParser
-from pw_html_parser import *
-
-depth = 0
-maxDepth = 7
-urls = ["http://www.philippe-chretien.com/index.htm"]
-done = []
-
-while depth < maxDepth:
-    newUrls = []
-    for url in urls:
-        if not url.strip().startswith("http"):
-            continue
-                
-        print "[", depth, "] >>>", url, "<<<"
-        
-        if url in done:
-            print "already processed ..."
-            continue
-                    
-        parser = pw_html_parser(url)
-        if parser.startParsing() == True:        
-            for word in parser.getWords():
-                # Add the word to the database ...
-                print word                
-            for anchor in parser.getAnchors():
-                newUrls.append(anchor)
-                
-        done.append(url)
-        
-    depth += 1
+class db:
+    dbInstance = None
     
-    urls = []
-    urls = newUrls[:]
-
+    def __init__(self, dbName):
+        if(dbName == "mysql"):
+            self.dbInstance = db_mysql()
+        if(dbName == "mssql"):
+            self.dbInstance = None
+        if(dbName == "oracle"):
+            self.dbInstance = None
+            
+    def dispose(self):
+        self.dbInstance.dispose()
