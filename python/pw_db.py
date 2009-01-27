@@ -26,15 +26,18 @@
 from pw_db_mysql import *
 
 class db:
-    dbInstance = None
+    __dbInstance = None
     
     def __init__(self, dbName):
         if(dbName == "mysql"):
-            self.dbInstance = db_mysql()
+            self.__dbInstance = db_mysql()
         if(dbName == "mssql"):
-            self.dbInstance = None
+            self.__dbInstance = None
         if(dbName == "oracle"):
-            self.dbInstance = None
+            self.__dbInstance = None
+            
+    def saveWord(self, word):
+        self.__dbInstance.saveWord(word)
             
     def dispose(self):
-        self.dbInstance.dispose()
+        self.__dbInstance.dispose()

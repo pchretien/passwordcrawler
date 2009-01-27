@@ -24,14 +24,17 @@
 # philippe.chretien@gmail.com
 
 import urllib
-
 from HTMLParser import HTMLParser
+
+from pw_db import *
 from pw_html_parser import *
 
 depth = 0
 maxDepth = 7
 urls = ["http://www.philippe-chretien.com/index.htm"]
 done = []
+
+database = db("mysql")
 
 while depth < maxDepth:
     newUrls = []
@@ -49,7 +52,9 @@ while depth < maxDepth:
         if parser.startParsing() == True:        
             for word in parser.getWords():
                 # Add the word to the database ...
-                print word                
+                print word 
+                database.saveWord(word)
+                               
             for anchor in parser.getAnchors():
                 newUrls.append(anchor)
                 
@@ -60,3 +65,6 @@ while depth < maxDepth:
     urls = []
     urls = newUrls[:]
 
+database.dispose()
+
+print "Done."
