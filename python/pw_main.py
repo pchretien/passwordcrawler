@@ -30,7 +30,7 @@ from pw_db import *
 from pw_html_parser import *
 
 depth = 0
-maxDepth = 7
+maxDepth = 4
 urls = ["http://www.philippe-chretien.com/index.htm"]
 done = []
 
@@ -52,7 +52,6 @@ while depth < maxDepth:
         if parser.startParsing() == True:        
             for word in parser.getWords():
                 # Add the word to the database ...
-                print word 
                 database.saveWord(word)
                                
             for anchor in parser.getAnchors():
@@ -68,3 +67,4 @@ while depth < maxDepth:
 database.dispose()
 
 print "Done."
+

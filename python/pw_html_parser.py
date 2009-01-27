@@ -59,6 +59,11 @@ class pw_html_parser(HTMLParser):
         
         tokens = data.split()
         for word in tokens:
+            
+            # Numbers are rejected ...
+            if word.isdigit():
+                continue
+            
             if len(word) >= self.__MINIMUM_LENGTH:
                 # Add the word to the database ...
                 self.__words.append(word)

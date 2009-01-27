@@ -69,6 +69,7 @@ class db_mysql:
             cursor.execute ("insert into pw_word(word, created) values (%s,NOW())", (word.lower()) )
             cursor.close ()        
             self.__conn.commit()
+            print word
         except:
             None
             
