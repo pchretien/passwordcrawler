@@ -40,7 +40,7 @@ class pw_html_parser(HTMLParser):
         
     def startParsing(self):
         try:
-            page = urllib.urlopen(self.__url).read()
+            page = urllib.urlopen(self.__url, proxies={}).read()
         except:
             print "failed to open the page %s ", (self.__url)
             return False

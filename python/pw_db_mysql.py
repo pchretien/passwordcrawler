@@ -39,7 +39,6 @@ class db_mysql:
         try:
             lines = file.read().splitlines()
             for line in lines:
-                print line
                 tokens = line.split('=')
                 if tokens[0] == "server":
                     self.__server = tokens[1]
@@ -87,6 +86,21 @@ class db_mysql:
             
         return ret
     
+    def getAllWords(self):
+        ret = []        
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("select word from pw_word" )
+            lines = cursor.fetchall()
+            for line in lines:
+                ret.append(line[0])
+                
+            cursor.close ()
+        except:
+            None
+            
+        return ret
+        
     
     def saveSite(self, url):
         ret = -1        
@@ -109,7 +123,22 @@ class db_mysql:
             return ret
         
         return ret
+    
+    def getAllSites(self):
+        ret = []        
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("select url from pw_site" )
+            lines = cursor.fetchall()
+            for line in lines:
+                ret.append(line[0])
+                
+            cursor.close ()
+        except:
+            None
             
+        return ret
+    
     def saveSiteWord(self, site_id, word_id):
         try:
             cursor = self.__conn.cursor ()

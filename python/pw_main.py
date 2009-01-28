@@ -23,50 +23,56 @@
 # You can contact me at the following email address:
 # philippe.chretien@gmail.com
 
+import sys
 import urllib
+from urlparse import urlparse
 from HTMLParser import HTMLParser
 
 from pw_db import *
+from pw_util import *
 from pw_html_parser import *
 
-depth = 0
-maxDepth = 4
-urls = ["  http://www.Astrophoto.CA  "]
+urls = []
+maxDepth = 1
+force = 0
+siteOnly = 1
+
+# Initialize application parameters
+if len(sys.argv) < 2:
+    print " usage: pw_main.py URL [depth (1)] [force 0:1 (0)] [site only 0:1 (1)]"
+    quit()
+
+# The first site to crawl ...    
+urls.append( sys.argv[1].strip().lower() )
+urlparts = urlparse.urlparse(sys.argv[1])
+hostname = urlparts[1]
+
+if len(sys.argv) > 2:
+    maxDepth = int(sys.argv[2])
+    
+if len(sys.argv) > 3:
+    force = int(sys.argv[3])
+    
+if len(sys.argv) > 4:
+    siteOnly = int(sys.argv[4])
 
 urlDone = []
 wordDone = []
 database = db("mysql")
 
-def crawlIt(url):
-    ret = True
+if force == 0:    
+    urlDone = database.getAllSites()
     
-    if url.lower().find(".google.") > -1:
-        ret = False
+wordDone = database.getAllWords()
     
-    if url.lower().find(".live.") > -1:
-        ret = False
-    
-    if url.lower().find(".yahoo.") > -1:
-        ret = False
-        
-    if not ret:
-        print "Its a crawler eat crawler world ..."
-    
-    return ret
-
-# Make sure the URLs passed in parameters are lower case.
-# All urls found by the parser are returned in lower case.
-for i in range (0,len(urls)):
-    urls[i] = urls[i].strip().lower()
-    
-while depth < maxDepth:
+for depth in range(0, maxDepth):
     newUrls = []
     for url in urls:
         # Only browse http content
         if not url.startswith("http"):
             continue
         
-        print "[", depth, "] >>>", url, "<<<"
+        print "[", depth+1, "] >>>", url, "<<<"
         
         if url in urlDone:
             print "already processed ..."
@@ -75,6 +81,10 @@ while depth < maxDepth:
         urlDone.append(url)
             
         if not crawlIt(url):
+            continue
+        
+        if siteOnly == 1 and url.find(hostname) < 0:
+            print "This url is not part of the site"
             continue
         
         site_id = database.saveSite(url)
@@ -100,8 +110,6 @@ while depth < maxDepth:
                                                    
             for anchor in parser.getAnchors():
                 newUrls.append(anchor)
-                
-    depth += 1
     
     urls = []
     urls = newUrls[:]

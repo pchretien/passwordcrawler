@@ -23,36 +23,19 @@
 # You can contact me at the following email address:
 # philippe.chretien@gmail.com
 
-from pw_db_mysql import *
-
-class db:
-    __dbInstance = None
+def crawlIt(url):
+    ret = True
     
-    def __init__(self, dbName):
-        if(dbName == "mysql"):
-            self.__dbInstance = db_mysql()
-        if(dbName == "mssql"):
-            self.__dbInstance = None
-        if(dbName == "oracle"):
-            self.__dbInstance = None
-            
-    def saveWord(self, word):
-        return self.__dbInstance.saveWord(word)
+    if url.lower().find(".google.") > -1:
+        ret = False
     
-    def getWordId(self, word):
-        return self.__dbInstance.getWordId(word)
+    if url.lower().find(".live.") > -1:
+        ret = False
     
-    def getAllWords(self):
-        return self.__dbInstance.getAllWords()
+    if url.lower().find(".yahoo.") > -1:
+        ret = False
+        
+    if not ret:
+        print "Its a crawler eat crawler world ..."
     
-    def saveSite(self, url):
-        return self.__dbInstance.saveSite(url)
-    
-    def getAllSites(self):
-        return self.__dbInstance.getAllSites()
-    
-    def saveSiteWord(self, site_id, word_id):
-        return self.__dbInstance.saveSiteWord(site_id, word_id)
-            
-    def dispose(self):
-        self.__dbInstance.dispose()
+    return ret
