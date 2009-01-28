@@ -6,7 +6,8 @@ Python files:
 	- python/pw_db.py
 	- python/pw_db_mysql.py
 	- python/pw_main.py
-	- pw_html_parser.py
+	- python/pw_html_parser.py
+	- python/pw_util.py
 	
 Database files:
 	- mysql/v1.0.0/table/pw_word.sql
