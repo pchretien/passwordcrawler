@@ -39,12 +39,17 @@ class pw_html_parser(HTMLParser):
         HTMLParser.__init__(self)
         
     def startParsing(self):
-        page = urllib.urlopen(self.__url).read()
+        try:
+            page = urllib.urlopen(self.__url).read()
+        except:
+            print "failed to open the page %s ", (self.__url)
+            return False
+        
         try:
             self.feed(page)
             self.close()
         except:
-            print "failed to load the page %s" % (self.__url)
+            print "failed to parse the page %s " % (self.__url)
             return False
         
         return True

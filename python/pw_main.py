@@ -31,34 +31,66 @@ from pw_html_parser import *
 
 depth = 0
 maxDepth = 4
-urls = ["http://www.philippe-chretien.com/index.htm"]
-done = []
-
+urls = ["http://www.astrophoto.ca"]
+urlDone = []
+wordDone = []
 database = db("mysql")
+
+def crawlIt(url):
+    if url.lower().find(".google.") > -1:
+        print "Its a crawler eat crawler world ..."
+        return False
+    
+    if url.lower().find(".live.") > -1:
+        print "Its a crawler eat crawler world ..."
+        return False
+    
+    if url.lower().find(".yahoo.") > -1:
+        print "Its a crawler eat crawler world ..."
+        return False
+    
+    return True
 
 while depth < maxDepth:
     newUrls = []
     for url in urls:
-        if not url.strip().startswith("http"):
+        # Clear trailing and tailing white spaces
+        url = url.strip().lower()
+        
+        # Only browse http content
+        if not url.startswith("http"):
             continue
-                
+        
         print "[", depth, "] >>>", url, "<<<"
         
-        if url in done:
+        if url in urlDone:
             print "already processed ..."
+            continue
+        
+        urlDone.append(url)
+            
+        if not crawlIt(url):
             continue
                     
         parser = pw_html_parser(url)
         if parser.startParsing() == True:        
+            
             for word in parser.getWords():
+                
+                # This avoid a unique constraint exception to be 
+                # raised by the database
+                if word in wordDone:
+                    continue
+                
                 # Add the word to the database ...
-                database.saveWord(word)
-                               
+                word = word.lower()
+                if database.saveWord(word):
+                    print word
+                    wordDone.append(word)
+                                                   
             for anchor in parser.getAnchors():
                 newUrls.append(anchor)
                 
-        done.append(url)
-        
     depth += 1
     
     urls = []

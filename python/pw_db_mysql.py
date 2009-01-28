@@ -66,12 +66,12 @@ class db_mysql:
     def saveWord(self, word):
         try:
             cursor = self.__conn.cursor ()
-            cursor.execute ("insert into pw_word(word, created) values (%s,NOW())", (word.lower()) )
+            cursor.execute ("insert into pw_word(word, created) values (%s,NOW())", (word) )
             cursor.close ()        
             self.__conn.commit()
-            print word
+            return True            
         except:
-            None
+            return False
             
     
         

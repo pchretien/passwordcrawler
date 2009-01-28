@@ -37,7 +37,7 @@ class db:
             self.__dbInstance = None
             
     def saveWord(self, word):
-        self.__dbInstance.saveWord(word)
+        return self.__dbInstance.saveWord(word)
             
     def dispose(self):
         self.__dbInstance.dispose()
