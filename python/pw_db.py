@@ -38,6 +38,15 @@ class db:
             
     def saveWord(self, word):
         return self.__dbInstance.saveWord(word)
+    
+    def getWordId(self, word):
+        return self.__dbInstance.getWordId(word)
+    
+    def saveSite(self, url):
+        return self.__dbInstance.saveSite(url)
+    
+    def saveSiteWord(self, site_id, word_id):
+        return self.__dbInstance.saveSiteWord(site_id, word_id)
             
     def dispose(self):
         self.__dbInstance.dispose()

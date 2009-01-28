@@ -31,32 +31,37 @@ from pw_html_parser import *
 
 depth = 0
 maxDepth = 4
-urls = ["http://www.astrophoto.ca"]
+urls = ["  http://www.Astrophoto.CA  "]
+
 urlDone = []
 wordDone = []
 database = db("mysql")
 
 def crawlIt(url):
+    ret = True
+    
     if url.lower().find(".google.") > -1:
-        print "Its a crawler eat crawler world ..."
-        return False
+        ret = False
     
     if url.lower().find(".live.") > -1:
-        print "Its a crawler eat crawler world ..."
-        return False
+        ret = False
     
     if url.lower().find(".yahoo.") > -1:
+        ret = False
+        
+    if not ret:
         print "Its a crawler eat crawler world ..."
-        return False
     
-    return True
+    return ret
 
+# Make sure the URLs passed in parameters are lower case.
+# All urls found by the parser are returned in lower case.
+for i in range (0,len(urls)):
+    urls[i] = urls[i].strip().lower()
+    
 while depth < maxDepth:
     newUrls = []
     for url in urls:
-        # Clear trailing and tailing white spaces
-        url = url.strip().lower()
-        
         # Only browse http content
         if not url.startswith("http"):
             continue
@@ -71,22 +76,27 @@ while depth < maxDepth:
             
         if not crawlIt(url):
             continue
+        
+        site_id = database.saveSite(url)
+        if site_id == -1:
+            print "Failed to write/read the url to the database ..."
+            continue
                     
         parser = pw_html_parser(url)
-        if parser.startParsing() == True:        
-            
+        if parser.startParsing() == True:     
             for word in parser.getWords():
                 
                 # This avoid a unique constraint exception to be 
                 # raised by the database
-                if word in wordDone:
-                    continue
+                if not word in wordDone:
+                    wordDone.append(word)
+                    if database.saveWord(word):
+                        print word                        
                 
                 # Add the word to the database ...
-                word = word.lower()
-                if database.saveWord(word):
-                    print word
-                    wordDone.append(word)
+                word_id =  database.getWordId(word)                
+                if word_id > -1:
+                    database.saveSiteWord(site_id, word_id)
                                                    
             for anchor in parser.getAnchors():
                 newUrls.append(anchor)

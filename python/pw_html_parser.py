@@ -55,6 +55,8 @@ class pw_html_parser(HTMLParser):
         return True
         
     def handle_data(self, data):
+        data = data.lower()
+        
         separators = (".", ",", "'", ";", ":", "!", "?", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "{", "}", "[", "]", "|", "\\", "\"", "<", ">", "/", "~", "`")
         for sep in separators:
             data = data.replace(sep, " ")
@@ -78,7 +80,7 @@ class pw_html_parser(HTMLParser):
             for k, v in attrs:
                 if k == "href":
                     anchor = urlparse.urljoin(self.__url, v, allow_fragments = True)
-                    self.__anchors.append(anchor)
+                    self.__anchors.append(anchor.strip().lower())
                     break
     
     def getWords(self):

@@ -69,9 +69,53 @@ class db_mysql:
             cursor.execute ("insert into pw_word(word, created) values (%s,NOW())", (word) )
             cursor.close ()        
             self.__conn.commit()
-            return True            
         except:
-            return False
+            return False  
+        
+        return True          
+       
+        
+    def getWordId(self, word):
+        ret = -1        
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("select id from pw_word where word = %s", (word) )
+            ret = int(cursor.fetchone ()[0])
+            cursor.close ()
+        except:
+            None
             
+        return ret
     
+    
+    def saveSite(self, url):
+        ret = -1        
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("insert into pw_site(url, created) values (%s,NOW())", (url) )
+            cursor.close ()   
+            self.__conn.commit() 
+        except:
+            # The url already exist ...
+            None 
+            
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("select id from pw_site where url = %s", (url) )
+            ret = int(cursor.fetchone ()[0])
+            cursor.close ()
+                 
+        except:
+            return ret
+        
+        return ret
+            
+    def saveSiteWord(self, site_id, word_id):
+        try:
+            cursor = self.__conn.cursor ()
+            cursor.execute ("insert into pw_word_site_xref(site_id, word_id, created) values (%s,%s,NOW())", (site_id, word_id) )
+            cursor.close ()   
+            self.__conn.commit() 
+        except:
+            None 
         
